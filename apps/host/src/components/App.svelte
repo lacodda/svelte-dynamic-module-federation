@@ -1,7 +1,7 @@
 <script lang="ts">
   import Navbar from "./Navbar.svelte";
   import { LoadRemoteModule } from "../load-remote-module";
-  let remoteAppTarget: any = null;
+  let remoteAppTarget: any;
   let dynamicComponent: any = null;
   let host: string = process.env.APPS_URL ?? "";
   let apps: string[] = [];
@@ -14,6 +14,7 @@
 
   async function setComponent(value: CustomEvent): Promise<void> {
     selected = value.detail;
+    remoteAppTarget.innerHTML = "";
     if (!selected) {
       dynamicComponent = null;
       return;
@@ -22,7 +23,9 @@
       await loadRemoteModule.loadComponent(selected, "./Module")
     ).default;
 
-    // new dynamicComponent({ target: remoteAppTarget });
+    new dynamicComponent({
+      target: remoteAppTarget,
+    });
   }
 
   async function loadServers(): Promise<void> {
@@ -40,8 +43,7 @@
     on:loadServers={loadServers}
     on:setComponent={setComponent}
   />
-  <!-- <div bind:this={remoteAppTarget} /> -->
-  <!-- <svelte:component this={dynamicComponent} /> -->
+  <div class="dynamic__component" bind:this={remoteAppTarget} />
   {#if !dynamicComponent}
     <div class="host__content">
       <div class="host__title">
@@ -70,6 +72,11 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
+    }
+  }
+  .dynamic {
+    &__component {
+      display: contents;
     }
   }
 </style>
