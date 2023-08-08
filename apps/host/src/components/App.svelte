@@ -1,6 +1,7 @@
 <script lang="ts">
-  import Navbar from "./Navbar.svelte";
-  import { LoadRemoteModule } from "../load-remote-module";
+  import { Navbar, Button } from '@libs/ui';
+  import { LoadRemoteModule } from '@libs/utils';
+  
   let remoteAppTarget: any;
   let dynamicComponent: any = null;
   let host: string = process.env.APPS_URL ?? "";
@@ -8,12 +9,12 @@
   let selected: string = "";
   const loadRemoteModule = new LoadRemoteModule();
 
-  function setHost(value: CustomEvent): void {
-    host = value.detail;
+  function setHost(event: Event): void {
+    host = (event.target as HTMLInputElement).value;
   }
 
-  async function setComponent(value: CustomEvent): Promise<void> {
-    selected = value.detail;
+  async function setComponent(event: Event): Promise<void> {
+    selected = (event.target as HTMLSelectElement).value;
     remoteAppTarget.innerHTML = "";
     if (!selected) {
       dynamicComponent = null;
@@ -35,14 +36,16 @@
 </script>
 
 <div class="host">
-  <Navbar
-    {apps}
-    {selected}
-    {host}
-    on:onInput={setHost}
-    on:loadServers={loadServers}
-    on:setComponent={setComponent}
-  />
+  <Navbar>
+    <input value={host} style="width: 100%" on:input={setHost} />
+    <Button on:click={loadServers}>Download</Button>
+    <select value={selected} on:change={setComponent}>
+      <option value="">Please select one</option>
+      {#each apps as app}
+        <option value={app}>{app}</option>
+      {/each}
+    </select>
+  </Navbar>
   <div class="dynamic__component" bind:this={remoteAppTarget} />
   {#if !dynamicComponent}
     <div class="host__content">
@@ -65,6 +68,7 @@
       width: 100%;
       height: 100%;
       h1 {
+        font-size: var(--font-size-h1);
         width: max-content;
         text-transform: uppercase;
         background: var(--teal);

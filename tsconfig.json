@@ -11,6 +11,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ESNext", "dom"],
+    "types": ["svelte"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "esModuleInterop": true,
@@ -18,13 +19,10 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "types": ["svelte"],
     "paths": {
       "@/*": ["src/*"],
-      "*": ["node_modules/*"],
-      "@assets/*": ["./assets/*"],
-      "@src/*": ["./src/*"],
-      "@libs/*": [ "libs/*/src" ]
+      "@libs/ui": ["../../libs/ui/src", "libs/ui/src"],
+      "@libs/utils": ["../../libs/utils/src", "libs/utils/src"]
     }
   },
   "exclude": ["node_modules", "dist"]
